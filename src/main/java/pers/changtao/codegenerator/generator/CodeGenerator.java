@@ -1,5 +1,5 @@
 /*
- *  Copyright 2010-2021 ChangTao
+ *  Copyright 2020-2021 ChangTao
  *  Email changtao6605@gmail.com
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -93,7 +93,7 @@ public class CodeGenerator {
         codeGeneratorTemplateConfig.disable(TemplateType.CONTROLLER);
         codeGeneratorTemplateConfig.disable(TemplateType.ENTITY);
         codeGeneratorTemplateConfig.disable(TemplateType.MAPPER);
-        codeGeneratorTemplateConfig.disable(TemplateType.SERVICE);
+//        codeGeneratorTemplateConfig.disable(TemplateType.SERVICE);
         codeGeneratorTemplateConfig.setEntity("templates/entity.java");
         codeGeneratorTemplateConfig.setMapper("templates/mapper.xml");
         codeGeneratorTemplateConfig.setMapper("templates/mapper.java");
