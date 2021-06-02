@@ -27,7 +27,19 @@ import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.setting.dialect.Props;
+import org.dom4j.*;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
+import org.mybatis.generator.api.MyBatisGenerator;
+import org.mybatis.generator.config.Configuration;
+import org.mybatis.generator.config.Context;
+import org.mybatis.generator.config.ModelType;
+import org.mybatis.generator.config.TableConfiguration;
+import org.mybatis.generator.config.xml.ConfigurationParser;
+import org.mybatis.generator.internal.DefaultShellCallback;
 
+import java.io.*;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
@@ -43,7 +55,7 @@ import java.util.ArrayList;
  */
 public class CodeGenerator {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         AutoGenerator codeGenerator = new AutoGenerator();
 //        String projectPath = System.getProperty("user.dir") + "/codeGenerator";
         String projectPath = System.getProperty("user.dir") + "/";
@@ -60,7 +72,18 @@ public class CodeGenerator {
         codeGenerator.setTemplateEngine(new FreemarkerTemplateEngine());
         //执行代码生成
         codeGenerator.execute();
-    }
+//      生成模型代码
+        try {
+            mybatisGenerator(dataTableNames, projectModuleName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Throwable[] suppressedExceptions = e.getSuppressed();
+            Throwable closeException = suppressedExceptions[0];
+            closeException.printStackTrace();
+        }
+//        System.exit(0);
+
+   }
 
     /**
      * <p>
@@ -193,7 +216,7 @@ public class CodeGenerator {
         fileOutConfigList.add(new FileOutConfig(templatePath) {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return projectPath + "/src/main/resources/mapper/" + projectModuleName
+                return projectPath + "/src/main/resources/" + "pers/changtao/codegenerator/mapper"
                         + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
             }
         });
@@ -201,4 +224,44 @@ public class CodeGenerator {
         return codeGeneratorInjectionConfig;
     }
 
+    public static void mybatisGenerator(String[] tables, String projectModelName) throws Exception {
+        InputStream inputStream = CodeGenerator.class.getResourceAsStream("/generatorConfig.xml");
+        List<String> warnings = new ArrayList<String>();
+        ConfigurationParser configurationParser = new ConfigurationParser(warnings);
+        Configuration parseConfiguration = configurationParser.parseConfiguration(inputStream);
+//      创建modelType实例
+        ModelType defaultModelType = ModelType.getModelType("FLAT");
+        Context context = new Context(defaultModelType);
+        inputStream.close();
+//      动态添加控制台输入的表名到表配置类
+        for (String str:tables) {
+            if (str.contains("*")) {
+                str = str.replace("*","%");
+            }
+//          必须在循环内创建tableElement实例然后添加多个表名，否则会重复添加同一个表名
+            TableConfiguration tableElement = new TableConfiguration(context);
+//            tableElement.setTableName("bd_stores");
+            tableElement.setTableName(str);
+            parseConfiguration.getContext("codeGeneratorConfig")
+//                两种方法都可以添加数据表相关类tableConfiguration，注意防止空指针
+//                  .addTableConfiguration(tableElement)
+                    .getTableConfigurations()
+                    .add(tableElement);
+        }
+//      修改model和mapper的产成位置必须修改包名，不要修改TargetProject的路径,一修改就找不到
+        parseConfiguration.getContext("codeGeneratorConfig").getJavaModelGeneratorConfiguration().setTargetPackage("pers.changtao.codegenerator.modules." + projectModelName + ".model");
+//        config.getContext("codeGeneratorConfig").getJavaModelGeneratorConfiguration().setTargetProject(projectPath + "src/main/java/" + projectModelName + "/model/dfas.java");
+        parseConfiguration.getContext("codeGeneratorConfig").getJavaModelGeneratorConfiguration().setTargetProject("src\\main\\java");
+        parseConfiguration.getContext("codeGeneratorConfig").getJavaClientGeneratorConfiguration().setTargetPackage("pers.changtao.codegenerator.modules." + projectModelName + ".mapper");
+        parseConfiguration.getContext("codeGeneratorConfig").getJavaClientGeneratorConfiguration().setTargetProject("src\\main\\java\\");
+        System.out.println("java model target project: " + parseConfiguration.getContext("codeGeneratorConfig").getJavaModelGeneratorConfiguration().getTargetProject());
+        DefaultShellCallback defaultShellCallback = new DefaultShellCallback(true);
+        //创建生成器
+        MyBatisGenerator myBatisGenerator = new MyBatisGenerator(parseConfiguration, defaultShellCallback, warnings);
+        myBatisGenerator.generate(null);
+        //显示所有警告信息
+        for (String warning : warnings) {
+            System.out.println(warning);
+        }
+    }
 }

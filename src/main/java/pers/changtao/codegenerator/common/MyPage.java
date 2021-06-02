@@ -17,6 +17,7 @@ package pers.changtao.codegenerator.common;
 
 import cn.hutool.core.convert.Convert;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class MyPage<T> {
     }
 
     /**
-     * 把分页记录转化为返回结果
+     * 把Page<T>分页记录转化为返回结果
      */
     public static <T> MyPage<T> pageResult(Page<T> pageList) {
         MyPage<T> myPage = new MyPage<>();
@@ -86,6 +87,20 @@ public class MyPage<T> {
         myPage.setPageNum(Convert.toInt(pageList.getCurrent()));
         myPage.setPageSize(Convert.toInt(pageList.getSize()));
         myPage.setList(pageList.getRecords());
+        return myPage;
+    }
+
+    /**
+     * 把List<T>分页记录转化为返回结果
+     */
+    public static <T> MyPage<T> pageResult(List<T> pageList) {
+        MyPage<T> myPage = new MyPage<>();
+        PageInfo<T> pageInfo = new PageInfo<T>(pageList);
+        myPage.setCount(Convert.toInt(pageInfo.getTotal()));
+        myPage.setPageTotal(Convert.toInt(pageInfo.getTotal()/pageInfo.getSize()+1));
+        myPage.setPageNum(Convert.toInt(pageInfo.getPageNum()));
+        myPage.setPageSize(Convert.toInt(pageInfo.getSize()));
+        myPage.setList(pageInfo.getList());
         return myPage;
     }
 }
