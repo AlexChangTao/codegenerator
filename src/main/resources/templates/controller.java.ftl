@@ -73,7 +73,7 @@ public class ${table.controllerName} {
 
   private static final Logger logger = LoggerFactory.getLogger(${table.entityName}Controller.class);
 
-    @ApiOperation("添加角色")
+    @ApiOperation("添加${table.comment!}")
     @RequestMapping(value = "/create${table.entityName}", method = RequestMethod.POST)
     @ResponseBody
     public DataReturn create${table.entityName}(@RequestBody ${table.entityName} ${table.entityPath}) {
@@ -84,7 +84,7 @@ public class ${table.controllerName} {
         return DataReturn.failed();
     }
 
-    @ApiOperation("修改角色")
+    @ApiOperation("修改${table.comment!}")
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
     @ResponseBody
     public DataReturn update(@PathVariable Long id, @RequestBody ${table.entityName} ${table.entityPath}) {
@@ -95,7 +95,7 @@ public class ${table.controllerName} {
         return DataReturn.failed();
     }
 
-    @ApiOperation("批量删除角色")
+    @ApiOperation("批量删除${table.comment!}")
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     @ResponseBody
     public DataReturn delete(@PathVariable Long id) {
@@ -106,7 +106,7 @@ public class ${table.controllerName} {
         return DataReturn.failed();
     }
 
-    @ApiOperation("获取所有角色")
+    @ApiOperation("获取所有${table.comment!}")
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
     @ResponseBody
     public DataReturn<List<${table.entityName}>> listAll() {
@@ -114,7 +114,7 @@ public class ${table.controllerName} {
         return DataReturn.success(${table.entityPath}List);
      }
 
-    @ApiOperation("修改状态")
+    @ApiOperation("修改${table.comment!}状态")
     @RequestMapping(value = "/updateStatus/{id}", method = RequestMethod.POST)
     @ResponseBody
     public DataReturn updateStatus(@PathVariable Long id, @RequestBody ${table.entityName} ${table.entityPath}) {
@@ -125,7 +125,7 @@ public class ${table.controllerName} {
         return DataReturn.failed();
     }
 
-    @ApiOperation("根据角色名称分页获取角色列表")
+    @ApiOperation("根据${table.comment!}名称分页获取${table.comment!}列表")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
     public DataReturn<MyPage<${table.entityName}>> list(@RequestParam(value = "keyword", required = false) String keyword,

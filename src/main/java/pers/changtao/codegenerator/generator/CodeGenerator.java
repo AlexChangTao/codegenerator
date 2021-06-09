@@ -125,6 +125,7 @@ public class CodeGenerator {
 //        codeGeneratorTemplateConfig.setService("templates/Interface");
         codeGeneratorTemplateConfig.setServiceImpl("templates/service.java");
         codeGeneratorTemplateConfig.setServiceImpl("templates/serviceImpl.java");
+//        codeGeneratorTemplateConfig.setServiceImpl("templates/serviceImplTest.java");
         codeGeneratorTemplateConfig.setXml(null);
         return codeGeneratorTemplateConfig;
     }

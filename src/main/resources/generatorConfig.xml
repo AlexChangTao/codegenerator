@@ -1,39 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE generatorConfiguration
-        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
-        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
-
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
     <properties resource="generator.properties"/>
-    <context id="MySqlContext" targetRuntime="MyBatis3" defaultModelType="flat">
+    <context id="codeGeneratorConfig" targetRuntime="MyBatis3" defaultModelType="flat">
         <property name="beginningDelimiter" value="`"/>
         <property name="endingDelimiter" value="`"/>
         <property name="javaFileEncoding" value="UTF-8"/>
-        <!-- 为模型生成序列化方法-->
+        <!-- 生成mybatis序列化方法-->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
-        <!-- 为生成的Java模型创建一个toString方法 -->
+        <!-- 生成模型toString方法 -->
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
-        <!--生成mapper.xml时覆盖原文件-->
+        <!--生成xml文件时覆盖原文件-->
         <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
-        <commentGenerator type="pers.changtao.codegenerator.generator.CommentGenerator">
-            <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
-            <property name="suppressAllComments" value="true"/>
+        <commentGenerator type="pers.changtao.codegenerator.generator.MybatisCommentGenerator">
+            <!-- 是否删除自动生成的注释-->
+            <property name="suppressAllComments" value="false"/>
             <property name="suppressDate" value="true"/>
-            <property name="addRemarkComments" value="true"/>
+            <property name="isAddRemarkComments" value="true"/>
         </commentGenerator>
+        <!--mysql数据库配置参数-->
         <jdbcConnection driverClass="${dataSource.driverName}"
                         connectionURL="${dataSource.url}"
                         userId="${dataSource.username}"
                         password="${dataSource.password}">
             <property name="nullCatalogMeansCurrent" value="true" />
         </jdbcConnection>
-
+        <!--自定义配置生成目录-->
         <javaModelGenerator targetPackage="pers.changtao.codegenerator.modules.model" targetProject="src\main\java"/>
-
         <sqlMapGenerator targetPackage="pers.changtao.codegenerator.mapper" targetProject="src\main\resources"/>
-
-        <javaClientGenerator type="XMLMAPPER" targetPackage="pers.changtao.codegenerator.modules.mapper"
-                             targetProject="src\main\java"/>
+        <javaClientGenerator type="XMLMAPPER" targetPackage="pers.changtao.codegenerator.modules.mapper" targetProject="src\main\java"/>
         <!--%表示通配表名-->
         <table tableName="bd_users">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
